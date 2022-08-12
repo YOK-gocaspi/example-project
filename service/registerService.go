@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"example-project/model"
 )
 
@@ -8,6 +9,7 @@ import (
 type DatabaseInterface interface {
 	UpdateMany(docs []interface{}) interface{}
 	GetByID(id string) model.Employee
+	DeleteByID(id string) (int64, error)
 	GetAll() []model.Employee
 }
 
@@ -29,6 +31,26 @@ func (s EmployeeService) CreateEmployees(employees []model.Employee) interface{}
 
 	}
 	return s.DbService.UpdateMany(emp)
+}
+
+func (s EmployeeService) DeleteEmployees(ids []string) (interface{}, error) {
+	var deletedIDs []string
+
+	for _, id := range ids {
+		deletedCount, err := s.DbService.DeleteByID(id)
+		if err != nil {
+			return deletedIDs, err
+		}
+
+		if deletedCount == 0 {
+			err = errors.New("no user has been deleted")
+			return deletedIDs, err
+		} else {
+			deletedIDs = append(deletedIDs, id)
+		}
+	}
+
+	return deletedIDs, nil
 }
 
 func (s EmployeeService) GetEmployeeById(id string) model.Employee {
