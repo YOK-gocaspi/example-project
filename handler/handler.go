@@ -10,6 +10,7 @@ import (
 type ServiceInterface interface {
 	CreateEmployees(employees []model.Employee) interface{}
 	GetEmployeeById(id string) model.Employee
+	GetAllEmployees() []model.Employee
 }
 
 type Handler struct {
@@ -46,5 +47,10 @@ func (handler Handler) GetEmployeeHandler(c *gin.Context) {
 	}
 
 	response := handler.ServiceInterface.GetEmployeeById(pathParam)
+	c.JSON(http.StatusOK, response)
+}
+
+func (handler Handler) GetAllEmployeesHandler(c *gin.Context) {
+	response := handler.ServiceInterface.GetAllEmployees()
 	c.JSON(http.StatusOK, response)
 }

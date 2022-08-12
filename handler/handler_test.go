@@ -29,3 +29,21 @@ func TestGetEmployeeHandler_Return_valid_status_code(t *testing.T) {
 	assert.Equal(t, http.StatusOK, responseRecoder.Code)
 
 }
+
+func TestGetAllEmployees(t *testing.T) {
+	responseRecorder := httptest.NewRecorder()
+	fakeService := &handlerfakes.FakeServiceInterface{}
+	fakeService.GetAllEmployeesCalls(func() []model.Employee {
+		return []model.Employee{
+			{},
+		}
+	})
+
+	fakeContext, _ := gin.CreateTestContext(responseRecorder)
+	fakeContext.Request = httptest.NewRequest("GET", "http://localhost:9090/employee/get", nil)
+
+	handlerInstance := handler.NewHandler(fakeService)
+	handlerInstance.GetAllEmployeesHandler(fakeContext)
+
+	assert.Equal(t, 200, responseRecorder.Code)
+}

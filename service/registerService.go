@@ -8,6 +8,7 @@ import (
 type DatabaseInterface interface {
 	UpdateMany(docs []interface{}) interface{}
 	GetByID(id string) model.Employee
+	GetAll() []model.Employee
 }
 
 type EmployeeService struct {
@@ -32,4 +33,8 @@ func (s EmployeeService) CreateEmployees(employees []model.Employee) interface{}
 
 func (s EmployeeService) GetEmployeeById(id string) model.Employee {
 	return s.DbService.GetByID(id)
+}
+
+func (s EmployeeService) GetAllEmployees() []model.Employee {
+	return s.DbService.GetAll()
 }
