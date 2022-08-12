@@ -11,6 +11,7 @@ type ServiceInterface interface {
 	CreateEmployees(employees []model.Employee) interface{}
 	GetEmployeeById(id string) model.Employee
 	GetAllEmployees() []model.Employee
+	DeleteEmployees(ids []string) (interface{}, error)
 }
 
 type Handler struct {
@@ -53,4 +54,16 @@ func (handler Handler) GetEmployeeHandler(c *gin.Context) {
 func (handler Handler) GetAllEmployeesHandler(c *gin.Context) {
 	response := handler.ServiceInterface.GetAllEmployees()
 	c.JSON(http.StatusOK, response)
+}
+
+func (handler Handler) DeleteEmployeeHandler(c *gin.Context) {
+	ids := c.QueryArray("id")
+	response, err := handler.ServiceInterface.DeleteEmployees(ids)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response)
+
+	} else {
+		c.JSON(http.StatusOK, response)
+	}
 }

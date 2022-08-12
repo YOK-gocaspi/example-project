@@ -1,6 +1,7 @@
 package handler_test
 
 import (
+	"errors"
 	"example-project/handler"
 	"example-project/handler/handlerfakes"
 	"example-project/model"
@@ -46,4 +47,53 @@ func TestGetAllEmployees(t *testing.T) {
 	handlerInstance.GetAllEmployeesHandler(fakeContext)
 
 	assert.Equal(t, 200, responseRecorder.Code)
+}
+
+func TestDeleteEmployeeHandler(t *testing.T) {
+
+	fakeServiceError := errors.New("fake service error")
+
+	fakeService := &handlerfakes.FakeServiceInterface{}
+	fakeService.DeleteEmployeesCalls(func(ids []string) (interface{}, error) {
+		var deletedIDs []string
+		for _, id := range ids {
+			if id == "0" {
+				return deletedIDs, fakeServiceError
+			}
+			deletedIDs = append(deletedIDs, id)
+		}
+		return deletedIDs, nil
+	})
+
+	var tests = []struct {
+		ids              []string
+		expectedStatus   int
+		expectedResponse string
+	}{
+		{[]string{"0"}, http.StatusInternalServerError, "null"},
+		{[]string{"1"}, http.StatusOK, "[\"1\"]"},
+		{[]string{"1", "0"}, http.StatusInternalServerError, "[\"1\"]"},
+		{[]string{"1", "2", "3"}, http.StatusOK, "[\"1\",\"2\",\"3\"]"},
+	}
+
+	for _, tt := range tests {
+		responseRecorder := httptest.NewRecorder()
+
+		fakeContext, _ := gin.CreateTestContext(responseRecorder)
+		var query string
+		for _, id := range tt.ids {
+			if query != "" {
+				query = query + "&"
+			}
+			query = query + "id=" + id
+		}
+		fakeContext.Request = httptest.NewRequest("DELETE", "http://localhost:9090/employee/delete?"+query, nil)
+
+		handlerInstance := handler.NewHandler(fakeService)
+		handlerInstance.DeleteEmployeeHandler(fakeContext)
+
+		assert.Equal(t, tt.expectedStatus, responseRecorder.Code)
+		assert.Equal(t, tt.expectedResponse, responseRecorder.Body.String())
+	}
+
 }
