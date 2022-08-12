@@ -13,6 +13,7 @@ import (
 type MongoDBInterface interface {
 	FindOne(ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) *mongo.SingleResult
 	InsertMany(ctx context.Context, documents []interface{}, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error)
+	Find(ctx context.Context, filter interface{}, opts ...*options.FindOptions) (*mongo.Cursor, error)
 }
 
 type Client struct {
@@ -44,4 +45,20 @@ func (c Client) GetByID(id string) model.Employee {
 		log.Println("error during data marshalling")
 	}
 	return employee
+}
+
+func (c Client) GetAll() []model.Employee {
+	filter := bson.M{}
+	cursor, err := c.Employee.Find(context.TODO(), filter)
+
+	var employees []model.Employee
+	err2 := cursor.All(context.TODO(), &employees)
+	if err != nil {
+		log.Println("error during data marshalling")
+	}
+	if err2 != nil {
+		log.Println("error:", err2)
+	}
+
+	return employees
 }

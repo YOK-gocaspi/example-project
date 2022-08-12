@@ -8,6 +8,16 @@ import (
 )
 
 type FakeDatabaseInterface struct {
+	GetAllStub        func() []model.Employee
+	getAllMutex       sync.RWMutex
+	getAllArgsForCall []struct {
+	}
+	getAllReturns struct {
+		result1 []model.Employee
+	}
+	getAllReturnsOnCall map[int]struct {
+		result1 []model.Employee
+	}
 	GetByIDStub        func(string) model.Employee
 	getByIDMutex       sync.RWMutex
 	getByIDArgsForCall []struct {
@@ -32,6 +42,59 @@ type FakeDatabaseInterface struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeDatabaseInterface) GetAll() []model.Employee {
+	fake.getAllMutex.Lock()
+	ret, specificReturn := fake.getAllReturnsOnCall[len(fake.getAllArgsForCall)]
+	fake.getAllArgsForCall = append(fake.getAllArgsForCall, struct {
+	}{})
+	stub := fake.GetAllStub
+	fakeReturns := fake.getAllReturns
+	fake.recordInvocation("GetAll", []interface{}{})
+	fake.getAllMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakeDatabaseInterface) GetAllCallCount() int {
+	fake.getAllMutex.RLock()
+	defer fake.getAllMutex.RUnlock()
+	return len(fake.getAllArgsForCall)
+}
+
+func (fake *FakeDatabaseInterface) GetAllCalls(stub func() []model.Employee) {
+	fake.getAllMutex.Lock()
+	defer fake.getAllMutex.Unlock()
+	fake.GetAllStub = stub
+}
+
+func (fake *FakeDatabaseInterface) GetAllReturns(result1 []model.Employee) {
+	fake.getAllMutex.Lock()
+	defer fake.getAllMutex.Unlock()
+	fake.GetAllStub = nil
+	fake.getAllReturns = struct {
+		result1 []model.Employee
+	}{result1}
+}
+
+func (fake *FakeDatabaseInterface) GetAllReturnsOnCall(i int, result1 []model.Employee) {
+	fake.getAllMutex.Lock()
+	defer fake.getAllMutex.Unlock()
+	fake.GetAllStub = nil
+	if fake.getAllReturnsOnCall == nil {
+		fake.getAllReturnsOnCall = make(map[int]struct {
+			result1 []model.Employee
+		})
+	}
+	fake.getAllReturnsOnCall[i] = struct {
+		result1 []model.Employee
+	}{result1}
 }
 
 func (fake *FakeDatabaseInterface) GetByID(arg1 string) model.Employee {
@@ -164,6 +227,8 @@ func (fake *FakeDatabaseInterface) UpdateManyReturnsOnCall(i int, result1 interf
 func (fake *FakeDatabaseInterface) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.getAllMutex.RLock()
+	defer fake.getAllMutex.RUnlock()
 	fake.getByIDMutex.RLock()
 	defer fake.getByIDMutex.RUnlock()
 	fake.updateManyMutex.RLock()

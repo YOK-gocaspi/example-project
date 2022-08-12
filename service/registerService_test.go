@@ -29,3 +29,20 @@ func TestGetEmployeeById(t *testing.T) {
 func TestCreateEmployees(t *testing.T) {
 	//here comes your first unit test which should cover the function CreateEmployees
 }
+
+func TestGetAllEmployees(t *testing.T) {
+	fakeDB := &servicefakes.FakeDatabaseInterface{}
+	data := []model.Employee{
+		{
+			ID:        "1",
+			FirstName: "jon",
+			LastName:  "kock",
+			Email:     "jon@gmail.com",
+		},
+	}
+	fakeDB.GetAllReturns(data)
+
+	serviceInstance := service.NewEmployeeService(fakeDB)
+	actual := serviceInstance.GetAllEmployees()
+	assert.Equal(t, data, actual)
+}
