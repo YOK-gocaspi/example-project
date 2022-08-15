@@ -8,7 +8,7 @@ import (
 
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 . ServiceInterface
 type ServiceInterface interface {
-	CreateEmployees(employees []model.Employee) interface{}
+	CreateEmployees(employees []model.Employee) (interface{}, error)
 	UpdateEmployees(employees []model.Employee) ([]string, error)
 	GetEmployeeById(id string) model.Employee
 	GetAllEmployees() []model.Employee
@@ -35,8 +35,12 @@ func (handler Handler) CreateEmployeeHandler(c *gin.Context) {
 		return
 	}
 
-	response := handler.ServiceInterface.CreateEmployees(payLoad.Employees)
-	c.JSON(200, response)
+	response, err := handler.ServiceInterface.CreateEmployees(payLoad.Employees)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response)
+	} else {
+		c.JSON(http.StatusOK, response)
+	}
 }
 
 func (handler Handler) UpdateEmployeeHandler(c *gin.Context) {

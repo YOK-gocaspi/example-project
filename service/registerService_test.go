@@ -121,3 +121,22 @@ func TestDeleteEmployees(t *testing.T) {
 	}
 
 }
+
+func TestCreateEmployee(t *testing.T) {
+	fakeDB := &servicefakes.FakeDatabaseInterface{}
+	data := []model.Employee{
+		{
+			ID:        "1",
+			FirstName: "jon",
+			LastName:  "kock",
+			Email:     "jon@gmail.com",
+		},
+	}
+	testEmployee := model.Employee{}
+	fakeDB.GetByIDReturns(data[0])
+	fakeDB.GetByIDReturns(testEmployee)
+	fakeDB.UpdateManyReturns(data)
+	serviceInstance := service.NewEmployeeService(fakeDB)
+	actual, _ := serviceInstance.CreateEmployees(data)
+	assert.Equal(t, data, actual)
+}
