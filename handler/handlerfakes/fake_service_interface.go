@@ -19,6 +19,19 @@ type FakeServiceInterface struct {
 	createEmployeesReturnsOnCall map[int]struct {
 		result1 interface{}
 	}
+	DeleteEmployeesStub        func([]string) (interface{}, error)
+	deleteEmployeesMutex       sync.RWMutex
+	deleteEmployeesArgsForCall []struct {
+		arg1 []string
+	}
+	deleteEmployeesReturns struct {
+		result1 interface{}
+		result2 error
+	}
+	deleteEmployeesReturnsOnCall map[int]struct {
+		result1 interface{}
+		result2 error
+	}
 	GetAllEmployeesStub        func() []model.Employee
 	getAllEmployeesMutex       sync.RWMutex
 	getAllEmployeesArgsForCall []struct {
@@ -39,6 +52,19 @@ type FakeServiceInterface struct {
 	}
 	getEmployeeByIdReturnsOnCall map[int]struct {
 		result1 model.Employee
+	}
+	UpdateEmployeesStub        func([]model.Employee) ([]string, error)
+	updateEmployeesMutex       sync.RWMutex
+	updateEmployeesArgsForCall []struct {
+		arg1 []model.Employee
+	}
+	updateEmployeesReturns struct {
+		result1 []string
+		result2 error
+	}
+	updateEmployeesReturnsOnCall map[int]struct {
+		result1 []string
+		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -108,6 +134,75 @@ func (fake *FakeServiceInterface) CreateEmployeesReturnsOnCall(i int, result1 in
 	fake.createEmployeesReturnsOnCall[i] = struct {
 		result1 interface{}
 	}{result1}
+}
+
+func (fake *FakeServiceInterface) DeleteEmployees(arg1 []string) (interface{}, error) {
+	var arg1Copy []string
+	if arg1 != nil {
+		arg1Copy = make([]string, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.deleteEmployeesMutex.Lock()
+	ret, specificReturn := fake.deleteEmployeesReturnsOnCall[len(fake.deleteEmployeesArgsForCall)]
+	fake.deleteEmployeesArgsForCall = append(fake.deleteEmployeesArgsForCall, struct {
+		arg1 []string
+	}{arg1Copy})
+	stub := fake.DeleteEmployeesStub
+	fakeReturns := fake.deleteEmployeesReturns
+	fake.recordInvocation("DeleteEmployees", []interface{}{arg1Copy})
+	fake.deleteEmployeesMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeServiceInterface) DeleteEmployeesCallCount() int {
+	fake.deleteEmployeesMutex.RLock()
+	defer fake.deleteEmployeesMutex.RUnlock()
+	return len(fake.deleteEmployeesArgsForCall)
+}
+
+func (fake *FakeServiceInterface) DeleteEmployeesCalls(stub func([]string) (interface{}, error)) {
+	fake.deleteEmployeesMutex.Lock()
+	defer fake.deleteEmployeesMutex.Unlock()
+	fake.DeleteEmployeesStub = stub
+}
+
+func (fake *FakeServiceInterface) DeleteEmployeesArgsForCall(i int) []string {
+	fake.deleteEmployeesMutex.RLock()
+	defer fake.deleteEmployeesMutex.RUnlock()
+	argsForCall := fake.deleteEmployeesArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeServiceInterface) DeleteEmployeesReturns(result1 interface{}, result2 error) {
+	fake.deleteEmployeesMutex.Lock()
+	defer fake.deleteEmployeesMutex.Unlock()
+	fake.DeleteEmployeesStub = nil
+	fake.deleteEmployeesReturns = struct {
+		result1 interface{}
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeServiceInterface) DeleteEmployeesReturnsOnCall(i int, result1 interface{}, result2 error) {
+	fake.deleteEmployeesMutex.Lock()
+	defer fake.deleteEmployeesMutex.Unlock()
+	fake.DeleteEmployeesStub = nil
+	if fake.deleteEmployeesReturnsOnCall == nil {
+		fake.deleteEmployeesReturnsOnCall = make(map[int]struct {
+			result1 interface{}
+			result2 error
+		})
+	}
+	fake.deleteEmployeesReturnsOnCall[i] = struct {
+		result1 interface{}
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeServiceInterface) GetAllEmployees() []model.Employee {
@@ -224,15 +319,88 @@ func (fake *FakeServiceInterface) GetEmployeeByIdReturnsOnCall(i int, result1 mo
 	}{result1}
 }
 
+func (fake *FakeServiceInterface) UpdateEmployees(arg1 []model.Employee) ([]string, error) {
+	var arg1Copy []model.Employee
+	if arg1 != nil {
+		arg1Copy = make([]model.Employee, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.updateEmployeesMutex.Lock()
+	ret, specificReturn := fake.updateEmployeesReturnsOnCall[len(fake.updateEmployeesArgsForCall)]
+	fake.updateEmployeesArgsForCall = append(fake.updateEmployeesArgsForCall, struct {
+		arg1 []model.Employee
+	}{arg1Copy})
+	stub := fake.UpdateEmployeesStub
+	fakeReturns := fake.updateEmployeesReturns
+	fake.recordInvocation("UpdateEmployees", []interface{}{arg1Copy})
+	fake.updateEmployeesMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeServiceInterface) UpdateEmployeesCallCount() int {
+	fake.updateEmployeesMutex.RLock()
+	defer fake.updateEmployeesMutex.RUnlock()
+	return len(fake.updateEmployeesArgsForCall)
+}
+
+func (fake *FakeServiceInterface) UpdateEmployeesCalls(stub func([]model.Employee) ([]string, error)) {
+	fake.updateEmployeesMutex.Lock()
+	defer fake.updateEmployeesMutex.Unlock()
+	fake.UpdateEmployeesStub = stub
+}
+
+func (fake *FakeServiceInterface) UpdateEmployeesArgsForCall(i int) []model.Employee {
+	fake.updateEmployeesMutex.RLock()
+	defer fake.updateEmployeesMutex.RUnlock()
+	argsForCall := fake.updateEmployeesArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeServiceInterface) UpdateEmployeesReturns(result1 []string, result2 error) {
+	fake.updateEmployeesMutex.Lock()
+	defer fake.updateEmployeesMutex.Unlock()
+	fake.UpdateEmployeesStub = nil
+	fake.updateEmployeesReturns = struct {
+		result1 []string
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeServiceInterface) UpdateEmployeesReturnsOnCall(i int, result1 []string, result2 error) {
+	fake.updateEmployeesMutex.Lock()
+	defer fake.updateEmployeesMutex.Unlock()
+	fake.UpdateEmployeesStub = nil
+	if fake.updateEmployeesReturnsOnCall == nil {
+		fake.updateEmployeesReturnsOnCall = make(map[int]struct {
+			result1 []string
+			result2 error
+		})
+	}
+	fake.updateEmployeesReturnsOnCall[i] = struct {
+		result1 []string
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeServiceInterface) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.createEmployeesMutex.RLock()
 	defer fake.createEmployeesMutex.RUnlock()
+	fake.deleteEmployeesMutex.RLock()
+	defer fake.deleteEmployeesMutex.RUnlock()
 	fake.getAllEmployeesMutex.RLock()
 	defer fake.getAllEmployeesMutex.RUnlock()
 	fake.getEmployeeByIdMutex.RLock()
 	defer fake.getEmployeeByIdMutex.RUnlock()
+	fake.updateEmployeesMutex.RLock()
+	defer fake.updateEmployeesMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

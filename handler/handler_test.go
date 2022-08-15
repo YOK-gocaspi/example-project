@@ -9,8 +9,45 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
+
+func TestUpdateEmployeeHandler(t *testing.T) {
+
+	validBody := "{\n  \"employees\": [\n    {\n      \"id\": \"1\",\n      \"first_name\": \"John\",\n      \"last_name\": \"Kenn\",\n      \"email\": \"john@gmail.com\"\n    },\n    {\n      \"id\": \"2\",\n      \"first_name\": \"Maria\",\n      \"last_name\": \"gonjaless\",\n      \"email\": \"maria@gmail.com\"\n    },\n    {\n      \"id\": \"3\",\n      \"first_name\": \"Lora\",\n      \"last_name\": \"kai\",\n      \"email\": \"lora@gmail.com\"\n    }\n  ]\n}"
+
+	fakeServiceError := errors.New("fake service error")
+
+	var tests = []struct {
+		body             string
+		serviceResponse  []string
+		serviceErr       error
+		expectedStatus   int
+		expectedResponse string
+	}{
+		{"invalid body", nil, nil, http.StatusBadRequest, "{\"errorMessage\":\"invalid payload\"}"},
+		{validBody, []string{"1", "2", "3"}, nil, http.StatusOK, "{\"updatedIDs\":[\"1\",\"2\",\"3\"]}"},
+		{validBody, []string{"1", "2", "3"}, fakeServiceError, http.StatusInternalServerError, "{\"updatedIDs\":[\"1\",\"2\",\"3\"]}"},
+	}
+
+	for _, tt := range tests {
+		fakeService := &handlerfakes.FakeServiceInterface{}
+		fakeService.UpdateEmployeesReturns(tt.serviceResponse, tt.serviceErr)
+
+		responseRecorder := httptest.NewRecorder()
+
+		fakeContext, _ := gin.CreateTestContext(responseRecorder)
+
+		fakeContext.Request = httptest.NewRequest("POST", "http://localhost:9090/employee/update", strings.NewReader(tt.body))
+
+		handlerInstance := handler.NewHandler(fakeService)
+		handlerInstance.UpdateEmployeeHandler(fakeContext)
+
+		assert.Equal(t, tt.expectedStatus, responseRecorder.Code)
+		assert.Equal(t, tt.expectedResponse, responseRecorder.Body.String())
+	}
+}
 
 func TestGetEmployeeHandler_Return_valid_status_code(t *testing.T) {
 	responseRecoder := httptest.NewRecorder()
