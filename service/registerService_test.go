@@ -31,6 +31,39 @@ func TestCreateEmployees(t *testing.T) {
 	//here comes your first unit test which should cover the function CreateEmployees
 }
 
+func TestUpdateEmployees(t *testing.T) {
+	fakeDB := &servicefakes.FakeDatabaseInterface{}
+
+	fakeDBError := errors.New("fake DB Error")
+	// always fails for Employee with ID 42
+	// otherwise never error
+	fakeDB.UpdateEmployeeCalls(func(employee model.Employee) error {
+		if employee.ID == "42" {
+			return fakeDBError
+		}
+		return nil
+	})
+
+	var tests = []struct {
+		employees      []model.Employee
+		expectedResult []string
+		expectedErr    error
+	}{
+		{[]model.Employee{{ID: "1"}}, []string{"1"}, nil},
+		{[]model.Employee{{ID: "1"}, {ID: "2"}}, []string{"1", "2"}, nil},
+		{[]model.Employee{{ID: "42"}}, []string(nil), fakeDBError},
+		{[]model.Employee{{ID: "1"}, {ID: "42"}}, []string{"1"}, fakeDBError},
+	}
+
+	for _, tt := range tests {
+		serviceInstance := service.NewEmployeeService(fakeDB)
+		actualResult, actualErr := serviceInstance.UpdateEmployees(tt.employees)
+
+		assert.Equal(t, tt.expectedErr, actualErr)
+		assert.Equal(t, tt.expectedResult, actualResult)
+	}
+}
+
 func TestGetAllEmployees(t *testing.T) {
 	fakeDB := &servicefakes.FakeDatabaseInterface{}
 	data := []model.Employee{

@@ -8,6 +8,30 @@ import (
 )
 
 type FakeDatabaseInterface struct {
+	CreateManyStub        func([]interface{}) interface{}
+	createManyMutex       sync.RWMutex
+	createManyArgsForCall []struct {
+		arg1 []interface{}
+	}
+	createManyReturns struct {
+		result1 interface{}
+	}
+	createManyReturnsOnCall map[int]struct {
+		result1 interface{}
+	}
+	DeleteByIDStub        func(string) (int64, error)
+	deleteByIDMutex       sync.RWMutex
+	deleteByIDArgsForCall []struct {
+		arg1 string
+	}
+	deleteByIDReturns struct {
+		result1 int64
+		result2 error
+	}
+	deleteByIDReturnsOnCall map[int]struct {
+		result1 int64
+		result2 error
+	}
 	GetAllStub        func() []model.Employee
 	getAllMutex       sync.RWMutex
 	getAllArgsForCall []struct {
@@ -29,19 +53,149 @@ type FakeDatabaseInterface struct {
 	getByIDReturnsOnCall map[int]struct {
 		result1 model.Employee
 	}
-	UpdateManyStub        func([]interface{}) interface{}
-	updateManyMutex       sync.RWMutex
-	updateManyArgsForCall []struct {
-		arg1 []interface{}
+	UpdateEmployeeStub        func(model.Employee) error
+	updateEmployeeMutex       sync.RWMutex
+	updateEmployeeArgsForCall []struct {
+		arg1 model.Employee
 	}
-	updateManyReturns struct {
-		result1 interface{}
+	updateEmployeeReturns struct {
+		result1 error
 	}
-	updateManyReturnsOnCall map[int]struct {
-		result1 interface{}
+	updateEmployeeReturnsOnCall map[int]struct {
+		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeDatabaseInterface) CreateMany(arg1 []interface{}) interface{} {
+	var arg1Copy []interface{}
+	if arg1 != nil {
+		arg1Copy = make([]interface{}, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.createManyMutex.Lock()
+	ret, specificReturn := fake.createManyReturnsOnCall[len(fake.createManyArgsForCall)]
+	fake.createManyArgsForCall = append(fake.createManyArgsForCall, struct {
+		arg1 []interface{}
+	}{arg1Copy})
+	stub := fake.CreateManyStub
+	fakeReturns := fake.createManyReturns
+	fake.recordInvocation("CreateMany", []interface{}{arg1Copy})
+	fake.createManyMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakeDatabaseInterface) CreateManyCallCount() int {
+	fake.createManyMutex.RLock()
+	defer fake.createManyMutex.RUnlock()
+	return len(fake.createManyArgsForCall)
+}
+
+func (fake *FakeDatabaseInterface) CreateManyCalls(stub func([]interface{}) interface{}) {
+	fake.createManyMutex.Lock()
+	defer fake.createManyMutex.Unlock()
+	fake.CreateManyStub = stub
+}
+
+func (fake *FakeDatabaseInterface) CreateManyArgsForCall(i int) []interface{} {
+	fake.createManyMutex.RLock()
+	defer fake.createManyMutex.RUnlock()
+	argsForCall := fake.createManyArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeDatabaseInterface) CreateManyReturns(result1 interface{}) {
+	fake.createManyMutex.Lock()
+	defer fake.createManyMutex.Unlock()
+	fake.CreateManyStub = nil
+	fake.createManyReturns = struct {
+		result1 interface{}
+	}{result1}
+}
+
+func (fake *FakeDatabaseInterface) CreateManyReturnsOnCall(i int, result1 interface{}) {
+	fake.createManyMutex.Lock()
+	defer fake.createManyMutex.Unlock()
+	fake.CreateManyStub = nil
+	if fake.createManyReturnsOnCall == nil {
+		fake.createManyReturnsOnCall = make(map[int]struct {
+			result1 interface{}
+		})
+	}
+	fake.createManyReturnsOnCall[i] = struct {
+		result1 interface{}
+	}{result1}
+}
+
+func (fake *FakeDatabaseInterface) DeleteByID(arg1 string) (int64, error) {
+	fake.deleteByIDMutex.Lock()
+	ret, specificReturn := fake.deleteByIDReturnsOnCall[len(fake.deleteByIDArgsForCall)]
+	fake.deleteByIDArgsForCall = append(fake.deleteByIDArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	stub := fake.DeleteByIDStub
+	fakeReturns := fake.deleteByIDReturns
+	fake.recordInvocation("DeleteByID", []interface{}{arg1})
+	fake.deleteByIDMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeDatabaseInterface) DeleteByIDCallCount() int {
+	fake.deleteByIDMutex.RLock()
+	defer fake.deleteByIDMutex.RUnlock()
+	return len(fake.deleteByIDArgsForCall)
+}
+
+func (fake *FakeDatabaseInterface) DeleteByIDCalls(stub func(string) (int64, error)) {
+	fake.deleteByIDMutex.Lock()
+	defer fake.deleteByIDMutex.Unlock()
+	fake.DeleteByIDStub = stub
+}
+
+func (fake *FakeDatabaseInterface) DeleteByIDArgsForCall(i int) string {
+	fake.deleteByIDMutex.RLock()
+	defer fake.deleteByIDMutex.RUnlock()
+	argsForCall := fake.deleteByIDArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeDatabaseInterface) DeleteByIDReturns(result1 int64, result2 error) {
+	fake.deleteByIDMutex.Lock()
+	defer fake.deleteByIDMutex.Unlock()
+	fake.DeleteByIDStub = nil
+	fake.deleteByIDReturns = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDatabaseInterface) DeleteByIDReturnsOnCall(i int, result1 int64, result2 error) {
+	fake.deleteByIDMutex.Lock()
+	defer fake.deleteByIDMutex.Unlock()
+	fake.DeleteByIDStub = nil
+	if fake.deleteByIDReturnsOnCall == nil {
+		fake.deleteByIDReturnsOnCall = make(map[int]struct {
+			result1 int64
+			result2 error
+		})
+	}
+	fake.deleteByIDReturnsOnCall[i] = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeDatabaseInterface) GetAll() []model.Employee {
@@ -158,21 +312,16 @@ func (fake *FakeDatabaseInterface) GetByIDReturnsOnCall(i int, result1 model.Emp
 	}{result1}
 }
 
-func (fake *FakeDatabaseInterface) UpdateMany(arg1 []interface{}) interface{} {
-	var arg1Copy []interface{}
-	if arg1 != nil {
-		arg1Copy = make([]interface{}, len(arg1))
-		copy(arg1Copy, arg1)
-	}
-	fake.updateManyMutex.Lock()
-	ret, specificReturn := fake.updateManyReturnsOnCall[len(fake.updateManyArgsForCall)]
-	fake.updateManyArgsForCall = append(fake.updateManyArgsForCall, struct {
-		arg1 []interface{}
-	}{arg1Copy})
-	stub := fake.UpdateManyStub
-	fakeReturns := fake.updateManyReturns
-	fake.recordInvocation("UpdateMany", []interface{}{arg1Copy})
-	fake.updateManyMutex.Unlock()
+func (fake *FakeDatabaseInterface) UpdateEmployee(arg1 model.Employee) error {
+	fake.updateEmployeeMutex.Lock()
+	ret, specificReturn := fake.updateEmployeeReturnsOnCall[len(fake.updateEmployeeArgsForCall)]
+	fake.updateEmployeeArgsForCall = append(fake.updateEmployeeArgsForCall, struct {
+		arg1 model.Employee
+	}{arg1})
+	stub := fake.UpdateEmployeeStub
+	fakeReturns := fake.updateEmployeeReturns
+	fake.recordInvocation("UpdateEmployee", []interface{}{arg1})
+	fake.updateEmployeeMutex.Unlock()
 	if stub != nil {
 		return stub(arg1)
 	}
@@ -182,57 +331,61 @@ func (fake *FakeDatabaseInterface) UpdateMany(arg1 []interface{}) interface{} {
 	return fakeReturns.result1
 }
 
-func (fake *FakeDatabaseInterface) UpdateManyCallCount() int {
-	fake.updateManyMutex.RLock()
-	defer fake.updateManyMutex.RUnlock()
-	return len(fake.updateManyArgsForCall)
+func (fake *FakeDatabaseInterface) UpdateEmployeeCallCount() int {
+	fake.updateEmployeeMutex.RLock()
+	defer fake.updateEmployeeMutex.RUnlock()
+	return len(fake.updateEmployeeArgsForCall)
 }
 
-func (fake *FakeDatabaseInterface) UpdateManyCalls(stub func([]interface{}) interface{}) {
-	fake.updateManyMutex.Lock()
-	defer fake.updateManyMutex.Unlock()
-	fake.UpdateManyStub = stub
+func (fake *FakeDatabaseInterface) UpdateEmployeeCalls(stub func(model.Employee) error) {
+	fake.updateEmployeeMutex.Lock()
+	defer fake.updateEmployeeMutex.Unlock()
+	fake.UpdateEmployeeStub = stub
 }
 
-func (fake *FakeDatabaseInterface) UpdateManyArgsForCall(i int) []interface{} {
-	fake.updateManyMutex.RLock()
-	defer fake.updateManyMutex.RUnlock()
-	argsForCall := fake.updateManyArgsForCall[i]
+func (fake *FakeDatabaseInterface) UpdateEmployeeArgsForCall(i int) model.Employee {
+	fake.updateEmployeeMutex.RLock()
+	defer fake.updateEmployeeMutex.RUnlock()
+	argsForCall := fake.updateEmployeeArgsForCall[i]
 	return argsForCall.arg1
 }
 
-func (fake *FakeDatabaseInterface) UpdateManyReturns(result1 interface{}) {
-	fake.updateManyMutex.Lock()
-	defer fake.updateManyMutex.Unlock()
-	fake.UpdateManyStub = nil
-	fake.updateManyReturns = struct {
-		result1 interface{}
+func (fake *FakeDatabaseInterface) UpdateEmployeeReturns(result1 error) {
+	fake.updateEmployeeMutex.Lock()
+	defer fake.updateEmployeeMutex.Unlock()
+	fake.UpdateEmployeeStub = nil
+	fake.updateEmployeeReturns = struct {
+		result1 error
 	}{result1}
 }
 
-func (fake *FakeDatabaseInterface) UpdateManyReturnsOnCall(i int, result1 interface{}) {
-	fake.updateManyMutex.Lock()
-	defer fake.updateManyMutex.Unlock()
-	fake.UpdateManyStub = nil
-	if fake.updateManyReturnsOnCall == nil {
-		fake.updateManyReturnsOnCall = make(map[int]struct {
-			result1 interface{}
+func (fake *FakeDatabaseInterface) UpdateEmployeeReturnsOnCall(i int, result1 error) {
+	fake.updateEmployeeMutex.Lock()
+	defer fake.updateEmployeeMutex.Unlock()
+	fake.UpdateEmployeeStub = nil
+	if fake.updateEmployeeReturnsOnCall == nil {
+		fake.updateEmployeeReturnsOnCall = make(map[int]struct {
+			result1 error
 		})
 	}
-	fake.updateManyReturnsOnCall[i] = struct {
-		result1 interface{}
+	fake.updateEmployeeReturnsOnCall[i] = struct {
+		result1 error
 	}{result1}
 }
 
 func (fake *FakeDatabaseInterface) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.createManyMutex.RLock()
+	defer fake.createManyMutex.RUnlock()
+	fake.deleteByIDMutex.RLock()
+	defer fake.deleteByIDMutex.RUnlock()
 	fake.getAllMutex.RLock()
 	defer fake.getAllMutex.RUnlock()
 	fake.getByIDMutex.RLock()
 	defer fake.getByIDMutex.RUnlock()
-	fake.updateManyMutex.RLock()
-	defer fake.updateManyMutex.RUnlock()
+	fake.updateEmployeeMutex.RLock()
+	defer fake.updateEmployeeMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value
