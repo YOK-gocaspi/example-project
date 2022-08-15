@@ -1,6 +1,7 @@
 package handler_test
 
 import (
+	"encoding/json"
 	"errors"
 	"example-project/handler"
 	"example-project/handler/handlerfakes"
@@ -132,5 +133,32 @@ func TestDeleteEmployeeHandler(t *testing.T) {
 		assert.Equal(t, tt.expectedStatus, responseRecorder.Code)
 		assert.Equal(t, tt.expectedResponse, responseRecorder.Body.String())
 	}
+
+}
+
+func TestCreateEmployeeHandler(t *testing.T) {
+	responseRecorder := httptest.NewRecorder()
+	fakeService := &handlerfakes.FakeServiceInterface{}
+	fakeService.CreateEmployeesReturns("myFantasyString", nil)
+
+	payload := model.Payload{
+		Employees: []model.Employee{
+			{
+				ID:        "1",
+				FirstName: "John",
+				LastName:  "Kenn",
+				Email:     "john@gmail.com",
+			},
+		},
+	}
+	jsonPayload, _ := json.Marshal(payload)
+
+	fakeContext, _ := gin.CreateTestContext(responseRecorder)
+	fakeContext.Request = httptest.NewRequest("POST", "http://localhost:9090/employee/create", strings.NewReader(string(jsonPayload)))
+
+	handlerInstance := handler.NewHandler(fakeService)
+	handlerInstance.CreateEmployeeHandler(fakeContext)
+
+	assert.Equal(t, 200, responseRecorder.Code)
 
 }
