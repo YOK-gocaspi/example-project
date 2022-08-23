@@ -31,7 +31,7 @@ func NewDbClient(d model.DbConfig) Client {
 	}
 }
 
-func (c Client) CreateMany(docs []interface{}) interface{} {
+func (c Client) UpdateMany(docs []interface{}) interface{} {
 	results, err := c.Employee.InsertMany(context.TODO(), docs)
 	if err != nil {
 		log.Println("database error")
